@@ -1,11 +1,59 @@
 {{ define "main" }}
-<div class="container">
-  Hello world
-    <h1>{{ .Title }}</h1>
-    <ul>
-        {{ range .Pages }}
-            <li><a href="{{ .Permalink }}">{{ .Date.Format "2006-01-02" }} | {{ .Title }}</a></li>
-        {{ end }}
-    </ul>
+<div class="flex mt-3">
+  <div class="w-3/12 mt-5 p-5 bg-blue-100 rounded-r-lg">
+    <div class="text-blue-600 font-bold text-right text-xl">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>&nbsp;
+      <div class="float-right">
+{{ if .Params.icon }}
+    {{- partial (print .Params.icon ".svg") . -}}
+{{ end }}
+    </div>
+    </div>
+  </div>
+  <div class="w-9/12 mt-5 mr-5 ml-5 bg-gray-50 p-5 rounded-l-lg">
+    <article class="prose">
+      {{ .Content }}
+
+      {{ if eq .Section "skills" }}
+      {{ range .Pages }}
+      <div class="prose"><b>{{ .Title }}</b></div> 
+      <div class="prose-sm mb-3">
+      {{ .Content }}
+      </div>
+      {{ end }}
+      {{ end }}
+
+      {{- if (ge (len .Pages) 1) -}}
+      <ul>
+      {{ range .Pages }}
+      {{ if eq .Section "education" }}
+      <li class="leading-tight"><b>{{ .Title }}</b> - <i>{{ .Params.school | default .Params.institution }}</i>. ({{ .Params.period }})<br/>
+        {{- if .Params.area -}}
+        <span class="text-gray-400 text-sm">{{ .Params.area }}</span>
+        {{- end -}}
+      </li>
+      {{ end }}
+
+      {{ if eq .Section "experience" }}
+      <li class="leading-tight"><b>{{ .Title }}</b> - <i>{{ .Params.institution }}</i> - {{.Params.location }}. {{ .Params.period }}<br/>
+        {{- if .Params.description -}}
+        <span class="text-gray-400 text-sm">{{ .Params.description }}</span>
+        {{- end -}}
+      </li>
+      {{ end }}
+
+
+      {{ if eq .Section "portfolio" }}
+      <li class="leading-tight"><a href="{{ .Params.purl }}" target="_blank"><b>{{ .Title }}</b></a>: {{ .Params.description }}<br/>
+        {{- if .Params.purl -}}
+        <span class="text-gray-400 text-sm">{{ .Params.purl }}</span>
+        {{- end -}}
+      </li>
+      {{ end }}
+      {{ end }}
+      </ul>
+      {{- end -}}
+    </article>
+  </div>
 </div>
 {{ end }}
